@@ -1,24 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route } from "react-router-dom";
+import "./App.css";
+import Home from "./Home";
+import Puzzle from "./Puzzle";
+import React, { useState } from "react";
 
 function App() {
+  const puzzles = [
+    {
+      puzzID: 1,
+      headerText: "Puzzle 1",
+      imageURL: "puzzle-1.png",
+    },
+    {
+      puzzID: 2,
+      headerText: "Puzzle 2",
+      imageURL: "puzzle-2.png",
+    },
+    {
+      puzzID: 3,
+      headerText: "Puzzle 3",
+      imageURL: "puzzle-3.png",
+    },
+  ];
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      <Route path="/" element={<Home puzzles={puzzles} />} />
+      <Route path="/puzzle/:puzzID" element={<Puzzle puzzles={puzzles} />} />
+    </Routes>
   );
 }
 
