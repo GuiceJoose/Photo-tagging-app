@@ -2,7 +2,7 @@ const StartModal = (props) => {
   return (
     <div className="start-modal">
       <div className="start-modal-box">
-        <div className="instructions">Instructions</div>
+        <div className="instructions">{props.instructions}</div>
         <button
           onClick={props.handleStart}
           type="button"

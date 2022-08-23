@@ -2,7 +2,6 @@ import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import Home from "./Home";
 import Puzzle from "./Puzzle";
-import React, { useState } from "react";
 
 function App() {
   const puzzles = [
@@ -10,16 +9,41 @@ function App() {
       puzzID: 1,
       headerText: "Puzzle 1",
       imageURL: "puzzle-1.png",
+      title: "Corn",
+      instructions: "Find the hamster and the pear in the corn",
+      options: ["Hamster", "Pear"],
     },
     {
       puzzID: 2,
       headerText: "Puzzle 2",
       imageURL: "puzzle-2.png",
+      title: "Candy",
+      instructions: "Find the spider and the candy corn",
+      options: ["Spider", "Candy Corn"],
+      answer: [
+        {
+          option: "Spider",
+          xmin: 16,
+          xmax: 23,
+          ymin: 59,
+          ymax: 66,
+        },
+        {
+          option: "Candy Corn",
+          xmin: 59,
+          xmax: 63,
+          ymin: 42,
+          ymax: 46,
+        },
+      ],
     },
     {
       puzzID: 3,
       headerText: "Puzzle 3",
       imageURL: "puzzle-3.png",
+      title: "Ghosts",
+      instructions: "Find the polar bear hiding among the ghosts",
+      options: ["Polar Bear"],
     },
   ];
 
