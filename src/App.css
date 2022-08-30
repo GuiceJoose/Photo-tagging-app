@@ -1,6 +1,6 @@
-* { 
-    background-color: #393E46;
-}
+html { background-color: #222831;}
+
+button {background-color: #393E46;}
 
 a {
     color: #F96D00;
@@ -14,9 +14,9 @@ h1 {
     width: 100%;
     background-color: #222831;
     color: #F96D00;
+    font-size: 3rem;
     display: flex;
     justify-content: center;
-    font-size: 4rem;
     z-index: 1;
     box-shadow: 0px 3px 3px 0px #F96D00;
 }
@@ -86,17 +86,54 @@ h1 {
 .target-menu {
     position: absolute;
     top: 100%;
+    background-color: rgb(0,0,0,0);
+    display: flex;
+    flex-direction: column;
+    
 }
 
-.cursor-box {
+.target-menu-item {
+    background-color: #222831;
+    color: #F96D00;
+    border-radius: 10px;
+}
+
+
+.feedback-message{
     position: absolute;
-    background-color: rgb(0,0,0,.5);
-    border: 1px solid rgb(0,0,0,.5);
-    transform: translate(-50%, -50%);
-    color: red;
+    top: 50px;
+    left: 50px;
+    font-size: 3rem;
+    padding: 1rem;
+    background-color: #393E46;
+    border-radius: 10px;
 }
 
-.start-modal {
+#hide-feedback-message {
+
+    -moz-animation: fadeout 0s ease-in 3s forwards;
+    /* Firefox */
+    -webkit-animation: fadeout 0s ease-in 3s forwards;
+    /* Safari and Chrome */
+    -o-animation: fadeout 0s ease-in 3s forwards;
+    /* Opera */
+    animation: fadeout 0s ease-in 3s forwards;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fadeout {
+    to {width: 0;
+    height:0;
+visibility: hidden;}
+}
+@-webkit-keyframes fadeout {
+    to {width: 0;
+    height:0;
+visibility: hidden;}
+}
+
+.start-modal, .scores-modal {
     position:fixed;
     left: 0;
     top: 0;
@@ -106,25 +143,54 @@ h1 {
     z-index: 1;
 }
 
-.start-modal-box {
+.start-modal-box, .scores-modal-box {
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     color: white;
-    background-color: black;
+    background-color:#222831;
     padding: 1rem, 1.5rem;
-    width: 24rem;
+    width: 40vw;
+    height: 40vh;
     border-radius: .5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    gap: 10vh;
+    border: 2px solid #F96D00;
 }
 
+.instructions {
+    background-color:#222831;
+    color: #F4F4F4;
+    font-size: 2rem;
+    text-align: center;
+}
+
+.start-button {
+    width: 20vw;
+    height: 10vh;
+    border-radius: 10px;
+    color: #F4F4F4;
+    font-size: 2rem;
+    transition: color 0.5s ease-in-out;
+}
+
+.start-button:hover {
+  color: #F96D00;
+}
+
+
+.score-form {
+    background-color: #222831;
+}
 
 .isBlurred {
     filter: blur(10px);
 }
+
 
 
 /* http://meyerweb.com/eric/tools/css/reset/ 
@@ -148,8 +214,6 @@ time, mark, audio, video {
 	margin: 0;
 	padding: 0;
 	border: 0;
-	font-size: 100%;
-	font: inherit;
 	vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */

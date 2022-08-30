@@ -3,12 +3,17 @@ import { useParams } from "react-router-dom";
 import StartModal from "./StartModal";
 import TargetBox from "./TargetBox";
 import Timer from "./Timer";
+import { intervalToDuration, formatDuration } from "date-fns/";
+import FeedbackMessage from "./FeedbackMessage";
+import ScoresModal from "./ScoresModal";
+import db from "./firebase.js";
 
 const Puzzle = (props) => {
   const selectedPuzzleID = useParams().puzzID;
   const selectedPuzzle = props.puzzles[selectedPuzzleID - 1];
-  const correctAnswer = selectedPuzzle.answer;
   const [isStarted, setIsStarted] = useState(false);
+  const [isOver, setIsOver] = useState(false);
+  const [timeStarted, setTimeStarted] = useState(null);
   const [mouseCoords, setMouseCoords] = useState(null);
   const [imgSize, setImgSize] = useState(null);
   const [taggingBox, setTaggingBox] = useState(false);
@@ -19,8 +24,34 @@ const Puzzle = (props) => {
   const [remainingOptions, setRemainingOptions] = useState(
     selectedPuzzle.options
   );
+  const [responseMessage, setResponseMessage] = useState({
+    isCorrect: false,
+    message: "",
+    coords: { x: 0, y: 0 },
+    repaintKey: 0,
+    imgSize: { width: null, height: null },
+  });
+  const [puzzleInfo, setPuzzleInfo] = useState([]);
+
+  useEffect(() => {
+    Fetchdata();
+  }, [selectedPuzzleID]);
+
+  const Fetchdata = () => {
+    db.collection("puzzle-answers")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((element) => {
+          let data = element.data();
+          setPuzzleInfo((arr) => [...arr, data]);
+        });
+      });
+  };
+
+  const selectedPuzzleCoords = puzzleInfo[selectedPuzzleID - 1];
 
   const handleStart = () => {
+    setTimeStarted(new Date());
     setIsStarted(true);
   };
 
@@ -41,20 +72,37 @@ const Puzzle = (props) => {
     }
   };
 
-  const checkUserAttempt = () => {
-    return correctAnswer.some((ans) => {
-      if (
-        userAttempt.option === ans.option &&
-        userAttempt.coords.x >= ans.xmin &&
-        userAttempt.coords.x <= ans.xmax &&
-        userAttempt.coords.y >= ans.ymin &&
-        userAttempt.coords.y <= ans.ymax
-      ) {
-        return true;
-      } else {
-        return false;
-      }
+  const handleCorrectAttempt = (userChoice) => {
+    setRemainingOptions(
+      remainingOptions.filter((option) => {
+        return option !== userChoice;
+      })
+    );
+    setResponseMessage({
+      isCorrect: true,
+      message: `You found the ${userChoice}`,
+      coords: { x: mouseCoords.x, y: mouseCoords.y },
+      repaintKey: ++responseMessage.repaintKey,
+      imgSize: { width: imgSize.width, height: imgSize.height },
     });
+  };
+
+  const handleWin = () => {
+    setIsOver(true);
+  };
+
+  const checkUserAttempt = () => {
+    const answer = selectedPuzzleCoords[userAttempt.option];
+    if (
+      userAttempt.coords.x >= answer[0] &&
+      userAttempt.coords.x <= answer[1] &&
+      userAttempt.coords.y >= answer[2] &&
+      userAttempt.coords.y <= answer[3]
+    ) {
+      return true;
+    } else {
+      return false;
+    }
   };
 
   const handleUserAttempt = (e) => {
@@ -72,23 +120,52 @@ const Puzzle = (props) => {
   useEffect(() => {
     if (userAttempt.option === null) {
       return;
-    } else if (checkUserAttempt()) {
-      alert("yay");
-    } else {
-      alert("boo");
+    }
+    if (checkUserAttempt()) {
+      handleCorrectAttempt(userAttempt.option);
+    }
+    if (!checkUserAttempt()) {
+      setResponseMessage({
+        isCorrect: false,
+        message: "Sorry, try again",
+        coords: { x: mouseCoords.x, y: mouseCoords.y },
+        repaintKey: ++responseMessage.repaintKey,
+        imgSize: { width: imgSize.width, height: imgSize.height },
+      });
     }
   }, [userAttempt]);
 
+  useEffect(() => {
+    if (remainingOptions.length === 0) {
+      handleWin();
+    }
+  }, [remainingOptions]);
+
   return (
     <div className="puzzle">
+      <Timer isStarted={isStarted} isOver={isOver} />
       {isStarted ? (
-        <Timer />
+        ""
       ) : (
         <StartModal
           instructions={selectedPuzzle.instructions}
           handleStart={handleStart}
         />
       )}
+      {isOver ? (
+        <ScoresModal
+          timeScore={formatDuration(
+            intervalToDuration({
+              start: timeStarted,
+              end: new Date(),
+            }),
+            "seconds"
+          )}
+        />
+      ) : (
+        ""
+      )}
+      <FeedbackMessage {...responseMessage} />
       <img
         onMouseDown={onMouseDown}
         id="image"
@@ -105,13 +182,11 @@ const Puzzle = (props) => {
           ]}
           coords={mouseCoords}
           imgSize={imgSize}
-          options={selectedPuzzle.options}
+          options={remainingOptions}
         />
       ) : (
         ""
       )}
-      {console.log(userAttempt)}
-      {console.log(correctAnswer)}
     </div>
   );
 };

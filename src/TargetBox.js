@@ -9,7 +9,6 @@ const TargetBox = (props) => {
         height: props.imgSize.height / 25,
       }}
     >
-      {console.log(props.relcoords)}
       <div className="target-menu">
         {props.options.map((option, index) => {
           return (

@@ -20,22 +20,6 @@ function App() {
       title: "Candy",
       instructions: "Find the spider and the candy corn",
       options: ["Spider", "Candy Corn"],
-      answer: [
-        {
-          option: "Spider",
-          xmin: 16,
-          xmax: 23,
-          ymin: 59,
-          ymax: 66,
-        },
-        {
-          option: "Candy Corn",
-          xmin: 59,
-          xmax: 63,
-          ymin: 42,
-          ymax: 46,
-        },
-      ],
     },
     {
       puzzID: 3,
